@@ -1,5 +1,6 @@
 import numpy as np
-import sigmoid
+from src import sigmoid
+
 
 class Network:
 
@@ -25,11 +26,10 @@ class Network:
 
         # b and w are acutally matrices to iterate over
         for b, w in zip(self.biases,self.weights):
-            a = sigmoid(np.dot(w,a)+b)
+            a = sigmoid(np.dot(w, a) + b)
         return a
 
 
     def SGD(self, training_data, epoch, mini_batch, eta, test_data=None):
         pass
 
-    
