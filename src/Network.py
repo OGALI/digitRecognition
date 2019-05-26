@@ -41,7 +41,7 @@ class Network:
         # zip function retunrns a series of tuple with a combo one of each of the list given so that x and y can iterate over
         # creates a matrix of matrices for all the weights where Wij where i is the weight to the second layer node and j is for the first layer node
         # weight matrices represented like that so could do do product of matrices WX + B
-
+        # There is a different weight
 
     def feedforwad(self, a):
         """Return the output of the network if ``a`` is input."""
@@ -70,10 +70,16 @@ class Network:
         n = len(training_data)
         # Redo this same for loop for each epoch
         for j in range(epoch):
+            # Shuffles the data
             random.shuffle(training_data)
+
+            # make many small batches after shuffle, not out of bound because range doesnt take the last number
             mini_batches = [training_data[k:k + mini_batch_size] for k in range(0, n, mini_batch_size)]
 
             for mini_batch in mini_batches:
+
+                # For each minibatch, apply single step of the gradient descent and updates weights and biases
+                # use 1 mini batch to calculate gradient
                 self.update_mini_batch(mini_batch, eta)
             if test_data:
                 print
@@ -84,14 +90,35 @@ class Network:
                 "Epoch {0} complete".format(j)
 
     def update_mini_batch(self, mini_batch, eta):
+        """Update the network's weights and biases by applying
+                gradient descent using backpropagation to a single mini batch.
+                The "mini_batch" is a list of tuples "(x, y)", and "eta"
+                is the learning rate."""
+
+        # Initialize the gradients to zero
+        nabla_b = [np.zeros(b.shape) for b in self.biases]
+        nabla_w = [np.zeros(w.shape) for w in self.weights]
+
+        for x, y in mini_batch:
+
+            # ***why nibla is calculated for each point
+            # calculates the delta to be used required
+            delta_nabla_b, delta_nabla_w = self.backprop(x, y)
+
+            # adding the delta to the gradients to get new gradient
+            nabla_b = [nb + dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
+            nabla_w = [nw + dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
+
+        self.weights = [w - (eta / len(mini_batch)) * nw for w, nw in zip(self.weights, nabla_w)]
+        self.biases = [b - (eta / len(mini_batch)) * nb for b, nb in zip(self.biases, nabla_b)]
+
+    def backprop(self, x, y):
+        """Return a tuple ``(nabla_b, nabla_w)`` representing the
+        gradient for the cost function C_x.  ``nabla_b`` and
+        ``nabla_w`` are layer-by-layer lists of numpy arrays, similar
+        to ``self.biases`` and ``self.weights``."""
+
         pass
-
-
-
-
-
-
-
 
 
 # Required function to evaluate
