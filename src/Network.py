@@ -12,7 +12,6 @@ and omits many desirable features.
 
 import numpy as np
 import random
-from src import sigmoid
 
 
 class Network:
